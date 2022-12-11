@@ -41,7 +41,6 @@ class PostController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'title' => 'required|string',
-            'sub_title' => 'required|string',
             'description' => 'required|string',
             'author' => 'required|string',
         ]);
@@ -96,7 +95,6 @@ class PostController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
            'title' => 'required|string',
-            'sub_title' => 'required|string',
             'description' => 'required|string',
             'author' => 'required|string',
         ]);
@@ -109,7 +107,6 @@ class PostController extends Controller
             return response()->json($arr, 200);
         }
         $post->title = $input['title'];
-        $post->sub_title = $input['sub_title'];
         $post->author = $input['author'];
         $post->description = $input['description'];
         $post->save();

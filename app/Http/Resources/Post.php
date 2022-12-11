@@ -16,7 +16,6 @@ class Post extends JsonResource
     {
         return [
             'title' => $this->title,
-            'sub_title' => $this->sub_title,
             'description' => $this->description,
             'author' => $this->author,
             'created_at' => $this->created_at->format('d/m/Y'),
