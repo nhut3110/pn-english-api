@@ -7,6 +7,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ImageController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -76,3 +77,15 @@ Route::prefix('posts')->group(function () {
 });
 
 //middleware('auth:sanctum')->
+
+// Upload Image API
+
+Route::prefix('images')->group(function () {
+    Route::post('/upload', [ImageController::class, 'imageUpload']);
+});
+
+
+Route::group(["namespace" => "Api"], function () {
+    Route::post('signup', [ImageController::class, 'signup']);
+    Route::post('login', [ImageController::class, 'login']);
+});

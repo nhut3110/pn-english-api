@@ -44,18 +44,19 @@ class PostController extends Controller
             'description' => 'required|string',
             'author' => 'required|string',
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             $arr = [
-            'success' => false,
-            'message' => 'Lỗi kiểm tra dữ liệu',
-            'data' => $validator->errors()
+                'success' => false,
+                'message' => 'Lỗi kiểm tra dữ liệu',
+                'data' => $validator->errors()
             ];
             return response()->json($arr, 200);
         }
         $post = Post::create($input);
-        $arr = ['status' => true,
-            'message'=>"Bài viết đã lưu thành công",
-            'data'=> new PostResource($post)
+        $arr = [
+            'status' => true,
+            'message' => "Bài viết đã lưu thành công",
+            'data' => new PostResource($post)
         ];
         return response()->json($arr, 201);
     }
@@ -68,7 +69,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $posts = Post::where('id',$id)->first();
+        $posts = Post::findOrFail($id);
         return response()->json($posts);
     }
 
@@ -94,15 +95,15 @@ class PostController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input, [
-           'title' => 'required|string',
+            'title' => 'required|string',
             'description' => 'required|string',
             'author' => 'required|string',
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             $arr = [
-            'success' => false,
-            'message' => 'Lỗi kiểm tra dữ liệu',
-            'data' => $validator->errors()
+                'success' => false,
+                'message' => 'Lỗi kiểm tra dữ liệu',
+                'data' => $validator->errors()
             ];
             return response()->json($arr, 200);
         }
@@ -129,7 +130,7 @@ class PostController extends Controller
         $post->delete();
         $arr = [
             'status' => true,
-            'message' =>'Bài viết đã được xóa',
+            'message' => 'Bài viết đã được xóa',
             'data' => [],
         ];
         return response()->json($arr, 200);
