@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('class', function (Blueprint $table) {
             $table->increments('id');
             $table->string('class_name');
-            $table->integer('total_student');
+            $table->integer('total_student')->default(0);
             $table->integer('course_id');
-            $table->boolean('is_open');
+            $table->boolean('is_open')->default(true);
             $table->date("start_date");
             $table->date("end_date");
             $table->timestamps();

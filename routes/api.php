@@ -72,8 +72,8 @@ Route::prefix('posts')->group(function () {
     Route::get('/', [PostController::class, 'index']);
     Route::get('/{id}', [PostController::class, 'show']);
     Route::post('/create', [PostController::class, 'store']);
-    Route::put('/update/{class}', [PostController::class, 'update']);
-    Route::delete('/delete/{class}', [PostController::class, 'destroy']);
+    Route::put('/update/{post}', [PostController::class, 'update']);
+    Route::delete('/delete/{post}', [PostController::class, 'destroy']);
 });
 
 //middleware('auth:sanctum')->

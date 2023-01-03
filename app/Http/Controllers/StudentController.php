@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Classes;
 use App\Http\Resources\StudentResource as StudentResource;
 use Illuminate\Support\Facades\Validator;
 
@@ -62,6 +63,11 @@ class StudentController extends Controller
             return response()->json($arr, 200);
         }
         $students = Student::create($input);
+        if ($input['current_class_id'] != null){
+            $class = Classess::where('id',$input['current_class_id'])->first();
+            $class['total_student'] += 1;
+            $class->save();
+        }
         $arr = ['status' => true,
             'message'=>"Học viên đã lưu thành công",
             'data'=> new StudentResource($students)
@@ -142,6 +148,20 @@ class StudentController extends Controller
         $student->age = $input['age'];
         $student->address = $input['address'];
         $student->description = $input['description'];
+        if ($student['current_class_id'] != $input['current_class_id']){
+            if ($student['current_class_id'] != 0){
+                $classOld = Classess::where('id',$student['current_class_id'])->first();
+                $classNew = Classess::where('id',$input['current_class_id'])->first();
+                $classOld["total_student"] -= 1;
+                $classNew["total_student"] += 1;
+                $classOld->save();
+                $classNew->save();
+            } else {
+                $classNew = Classess::where('id',$input['current_class_id'])->first();
+                $classNew["total_student"] += 1;
+                $classNew->save();
+            }
+        }
         $student->current_class_id = $input['current_class_id'];
         $student->is_paid = $input['is_paid'];
         $student->start_date = $input['start_date'];

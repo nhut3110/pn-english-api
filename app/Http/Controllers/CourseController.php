@@ -42,7 +42,7 @@ class CourseController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'course_name' => 'required|string',
-            'total_class' => 'required|numeric',
+            'total_class' => 'nullable|numeric',
             'available_class' => 'nullable|numeric',
             'description' => 'nullable|string',
             'start_date' => 'nullable|date',
@@ -111,7 +111,7 @@ class CourseController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'course_name' => 'required|string',
-            'total_class' => 'required|numeric',
+            'total_class' => 'nullable|numeric',
             'available_class' => 'nullable|numeric',
             'description' => 'nullable|string',
             'start_date' => 'nullable|date',
@@ -129,8 +129,6 @@ class CourseController extends Controller
         $course->total_class = $input['total_class'];
         $course->available_class = $input['available_class'];
         $course->description = $input['description'];
-        $course->start_date = $input['start_date'];
-        $course->end_date = $input['end_date'];
         $course->save();
         $arr = [
             'status' => true,

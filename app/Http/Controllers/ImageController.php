@@ -20,7 +20,7 @@ class ImageController extends Controller
 
             $image->move($path, $name);
 
-            return response()->json(['data' => '', 'message' => $name, 'status' => true], 200);
+            return response()->json(['data' => '', 'url' => 'http://127.0.0.1:8000/upload/'.$name, 'status' => true], 200);
         }
     }
 }
