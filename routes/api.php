@@ -25,7 +25,7 @@ use App\Http\Controllers\ImageController;
 
 // Student API
 
-Route::prefix('students')->group(function () {
+Route::middleware('auth:sanctum')->prefix('students')->group(function () {
     Route::get('/', [StudentController::class, 'index']);
     Route::get('/{id}', [StudentController::class, 'show']);
     Route::post('/create', [StudentController::class, 'store']);
@@ -36,7 +36,7 @@ Route::prefix('students')->group(function () {
 
 // Course API
 
-Route::prefix('courses')->group(function () {
+Route::middleware('auth:sanctum')->prefix('courses')->group(function () {
     Route::get('/', [CourseController::class, 'index']);
     Route::get('/{id}', [CourseController::class, 'show']);
     Route::post('/create', [CourseController::class, 'store']);
@@ -47,7 +47,7 @@ Route::prefix('courses')->group(function () {
 
 // Class API
 
-Route::prefix('classes')->group(function () {
+Route::middleware('auth:sanctum')->prefix('classes')->group(function () {
     Route::get('/', [ClassController::class, 'index']);
     Route::get('/{id}', [ClassController::class, 'show']);
     Route::post('/create', [ClassController::class, 'store']);
@@ -64,6 +64,7 @@ Route::prefix('accounts')->group(function () {
     Route::put('/update/{account}', [AccountController::class, 'update'])->middleware('auth:sanctum');;
     Route::delete('/delete/{account}', [AccountController::class, 'destroy'])->middleware('auth:sanctum');;
     Route::post('/login', [AccountController::class, 'login']);
+    Route::post('/refresh', [AccountController::class, 'refresh']);
 });
 
 // Post API

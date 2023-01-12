@@ -45,7 +45,7 @@ class StudentController extends Controller
             'full_name' => 'required|string',
             'student_phone' => 'required|string',
             'parent_phone' => 'required|string',
-            'student_email' => 'required|string',
+            'student_email' => 'required|string|email',
             'age' => 'required|numeric',
             'address' => 'required|string',
             'description' => 'nullable|string',
@@ -64,7 +64,7 @@ class StudentController extends Controller
         }
         $students = Student::create($input);
         if ($input['current_class_id'] != null){
-            $class = Classess::where('id',$input['current_class_id'])->first();
+            $class = Classes::where('id',$input['current_class_id'])->first();
             $class['total_student'] += 1;
             $class->save();
         }
@@ -150,14 +150,14 @@ class StudentController extends Controller
         $student->description = $input['description'];
         if ($student['current_class_id'] != $input['current_class_id']){
             if ($student['current_class_id'] != 0){
-                $classOld = Classess::where('id',$student['current_class_id'])->first();
-                $classNew = Classess::where('id',$input['current_class_id'])->first();
+                $classOld = Classes::where('id',$student['current_class_id'])->first();
+                $classNew = Classes::where('id',$input['current_class_id'])->first();
                 $classOld["total_student"] -= 1;
                 $classNew["total_student"] += 1;
                 $classOld->save();
                 $classNew->save();
             } else {
-                $classNew = Classess::where('id',$input['current_class_id'])->first();
+                $classNew = Classes::where('id',$input['current_class_id'])->first();
                 $classNew["total_student"] += 1;
                 $classNew->save();
             }
@@ -183,6 +183,11 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
+        if ($student['current_class_id'] != null){
+            $class = Classes::where('id',$input['current_class_id'])->first();
+            $class['total_student'] -= 1;
+            $class->save();
+        }
         $student->delete();
         $arr = [
             'status' => true,

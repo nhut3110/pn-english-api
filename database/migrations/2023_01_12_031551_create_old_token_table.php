@@ -13,13 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('account', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->string('account_type')->default("admin");
-            $table->rememberToken();
+        Schema::create('old_token', function (Blueprint $table) {
+            $table->id();
+            $table->string('token', 64)->unique();
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('account');
+        Schema::dropIfExists('old_token');
     }
 };

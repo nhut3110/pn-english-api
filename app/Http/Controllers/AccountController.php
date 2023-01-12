@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Account;
+use App\Models\OldToken;
 use App\Http\Resources\Account as AccountResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -46,7 +47,7 @@ class AccountController extends Controller
             'name' => 'required|string',
             'username' => 'required|string|unique:account',
             'password' => 'required|string',
-            'account_type' => 'required|string',
+            'account_type' => 'nullable|string',
         ]);
         if($validator->fails()){
             $arr = [
@@ -61,11 +62,12 @@ class AccountController extends Controller
         $arr = [
             'status' => true,
             'message'=>"Tài khoản đã lưu thành công",
-            'token' => $account->createToken("API TOKEN")->plainTextToken,
+            // 'token' => $account->createToken("API TOKEN")->plainTextToken,
             'data'=> new AccountResource($account)
         ];
         return response()->json($arr, 201);
     }
+
 
     /**
      *
@@ -101,10 +103,57 @@ class AccountController extends Controller
             return response()->json($arr, 200);
         }
         $account = Account::where('username', $request->username)->first();
+        if(auth('sanctum')->check()){
+            auth()->user()->tokens()->delete();
+        }
+
+        $token = $account->createToken("access_token")->plainTextToken;
+        OldToken::truncate();
+        $oldToken = OldToken::create(["token" => $token]);
         $arr = [
             'status' => true,
             'message'=>"Tài khoản đăng nhập thành công",
-            'token' => $account->createToken("API TOKEN")->plainTextToken,
+            'username' => $account->username,
+            'id' => $account->id,
+            'accessToken' => $token,
+            'oldaccessToken' => $oldToken["token"],
+            'data'=> ""
+        ];
+        return response()->json($arr, 201);
+    }
+
+    /**
+     * Update access token
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+     public function refresh(Request $request) {
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'id' => 'required|numeric',
+            'token' => 'required|string',
+        ]);
+        if($validator->fails()){
+            $arr = [
+            'success' => false,
+            'message' => 'Lỗi kiểm tra dữ liệu',
+            'data' => $validator->errors()
+            ];
+            return response()->json($arr, 200);
+        }
+        $account = Account::where('id', $request->id)->get();
+        $token = $account->createToken("access_token")->plainTextToken;
+        $oldToken = OldToken::where("token", $request->token)->first;
+        $oldToken->token = $token;
+        $oldToken->save();
+        $arr = [
+            'status' => true,
+            'message'=>"Đã tạo lại token mới",
+            'username' => $account->username,
+            'id' => $account->id,
+            'accessToken' => $token,
             'data'=> ""
         ];
         return response()->json($arr, 201);
@@ -147,7 +196,7 @@ class AccountController extends Controller
             'name' => 'required|string',
             'username' => 'required|string|unique',
             'password' => 'required|string',
-            'account_type' => 'required|string',
+            'account_type' => 'nullable|string',
         ]);
         if($validator->fails()){
             $arr = [
